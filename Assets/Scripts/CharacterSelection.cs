@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -13,8 +13,10 @@ public class CharacterSelection : MonoBehaviour
     public TextMeshProUGUI characterNameText;
     public Image characterIconImage;
     public GameObject characterDisplayParent;
+    public GameObject selectionUI;
 
     private GameObject currentCharacterModel;
+    private bool characterSelected = false;
 
     void Start()
     {
@@ -28,6 +30,17 @@ public class CharacterSelection : MonoBehaviour
         {
             currentNode = characterList.Head;
             UpdateCharacterDisplay();
+        }
+    }
+
+    void Update()
+    {
+        if (!characterSelected)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Auto SALTA XD");
         }
     }
 
@@ -60,13 +73,20 @@ public class CharacterSelection : MonoBehaviour
         characterIconImage.sprite = currentNode.Data.characterIcon;
         currentCharacterModel = Instantiate(currentNode.Data.characterPrefab, characterDisplayParent.transform);
     }
+
     public void SelectCharacter()
     {
+        Debug.Log("SELECCIONADO");
         if (currentNode != null && GameManager.Instance != null)
         {
             GameManager.Instance.SetSelectedCharacter(currentNode.Data);
 
-           // SceneManager.LoadScene("GameScene");
+            characterSelected = true;
+
+            if (selectionUI != null)
+                selectionUI.SetActive(false);
+
+            Debug.Log("Personaje seleccionado: " + currentNode.Data.characterName);
         }
     }
 }
