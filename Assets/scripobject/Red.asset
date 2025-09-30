@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: RED
   characterPrefab: {fileID: 642287924342879162, guid: 79d0ca8b77e301442afdb49f102e8aed, type: 3}
-  characterIcon: {fileID: 0}
+  characterIcon: {fileID: 21300000, guid: a99437e8502e8004d9a3c0e4a2850f61, type: 3}

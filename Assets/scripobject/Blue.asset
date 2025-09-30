@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Blue Wasa
   characterPrefab: {fileID: 642287924342879162, guid: 81ede6e10411f114392e2d9bda7d5d64, type: 3}
-  characterIcon: {fileID: 0}
+  characterIcon: {fileID: 21300000, guid: c0421611dada5204eb13995d043cf68a, type: 3}

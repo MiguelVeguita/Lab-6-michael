@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Yelow DUCK
   characterPrefab: {fileID: 642287924342879162, guid: 6c676bcffd393d74c8aca978c7cc1d22, type: 3}
-  characterIcon: {fileID: 0}
+  characterIcon: {fileID: 21300000, guid: a399f2f3b8b87064496fa1978fb057fd, type: 3}
