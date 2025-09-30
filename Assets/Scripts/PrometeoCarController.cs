@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PrometeoCarController : MonoBehaviour
 {
-    // CAR SETUP
     [Header("Configuración del Vehículo")]
     [Range(20, 250)]
     public int maxSpeed = 120;
@@ -21,7 +20,6 @@ public class PrometeoCarController : MonoBehaviour
     public int decelerationMultiplier = 2;
     public Vector3 bodyMassCenter;
 
-    // WHEELS
     [Header("Ruedas (Colliders y Meshes)")]
     public GameObject frontLeftMesh;
     public WheelCollider frontLeftCollider;
@@ -35,26 +33,31 @@ public class PrometeoCarController : MonoBehaviour
     public GameObject rearRightMesh;
     public WheelCollider rearRightCollider;
 
-    // Private Variables
     private Rigidbody carRigidbody;
     private float carSpeed;
     private float steerInput;
-    private float throttleInput; // 1 para acelerar, -1 para reversa, 0 para nada
+    private float throttleInput; 
     private bool isAccelerating;
     private bool isReversing;
 
+    private GamepadRumble rumbleManager;
     void Start()
     {
         carRigidbody = gameObject.GetComponent<Rigidbody>();
         carRigidbody.centerOfMass = bodyMassCenter;
+
+        GameObject gameManager = GameObject.Find("GameManager");
+        if (gameManager != null)
+        {
+            rumbleManager = gameManager.GetComponent<GamepadRumble>();
+        }
+
     }
 
     void FixedUpdate()
     {
-        // Calcula la velocidad actual del auto
         carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
 
-        // Determina la aceleración final basada en los inputs
         if (isAccelerating)
         {
             throttleInput = 1f;
@@ -77,17 +80,14 @@ public class PrometeoCarController : MonoBehaviour
         AnimateWheelMeshes();
     }
 
-    // --- MÉTODOS PÚBLICOS PARA EL INPUT SYSTEM ---
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        // Lee el valor X del joystick para la dirección
         steerInput = context.ReadValue<Vector2>().x;
     }
 
     public void OnAccelerate(InputAction.CallbackContext context)
     {
-        // context.ReadValueAsButton() devuelve true si el botón está presionado
         isAccelerating = context.ReadValueAsButton();
     }
 
@@ -96,13 +96,11 @@ public class PrometeoCarController : MonoBehaviour
         isReversing = context.ReadValueAsButton();
     }
 
-    // --- LÓGICA DEL VEHÍCULO ---
 
     private void HandleMotor()
     {
         float motorTorque = throttleInput * accelerationMultiplier * 50f;
 
-        // Si no se está acelerando ni frenando, se aplica una deceleración gradual
         if (throttleInput == 0 && carRigidbody.linearVelocity.magnitude > 0.1f)
         {
             frontLeftCollider.brakeTorque = frontRightCollider.brakeTorque = rearLeftCollider.brakeTorque = rearRightCollider.brakeTorque = decelerationMultiplier * 50f;
@@ -110,18 +108,14 @@ public class PrometeoCarController : MonoBehaviour
         }
         else
         {
-            // Quita la fuerza de freno para poder mover el auto
             frontLeftCollider.brakeTorque = frontRightCollider.brakeTorque = rearLeftCollider.brakeTorque = rearRightCollider.brakeTorque = 0;
 
-            // Acelerar
             if (carSpeed < maxSpeed && throttleInput > 0)
             {
                 ApplyMotorTorque(motorTorque);
             }
-            // Reversa
             else if (Mathf.Abs(carSpeed) < maxReverseSpeed && throttleInput < 0)
             {
-                // Si el auto se mueve hacia adelante, primero frena
                 if (carRigidbody.linearVelocity.z > 0.1f)
                 {
                     ApplyBrakes();
@@ -131,7 +125,6 @@ public class PrometeoCarController : MonoBehaviour
                     ApplyMotorTorque(motorTorque);
                 }
             }
-            // Si se alcanza la velocidad máxima, se deja de aplicar fuerza
             else
             {
                 ApplyMotorTorque(0);
@@ -142,7 +135,6 @@ public class PrometeoCarController : MonoBehaviour
     private void HandleSteering()
     {
         float targetSteerAngle = steerInput * maxSteeringAngle;
-        // Interpola suavemente hacia el ángulo de giro deseado
         frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, targetSteerAngle, steeringSpeed);
         frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, targetSteerAngle, steeringSpeed);
     }
@@ -177,4 +169,28 @@ public class PrometeoCarController : MonoBehaviour
         meshTransform.position = pos;
         meshTransform.rotation = rot;
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Pared")
+        {
+            Debug.Log("choque");
+
+            float low = 0.8f;
+            float high = 0.8f;
+            float duration = 0.5f;
+
+            rumbleManager.RumblePulse(low, high, duration);
+        }
+        if (rumbleManager != null && collision.relativeVelocity.magnitude > 10)
+        {
+            Debug.Log("choque");
+            float low = 0.8f;   
+            float high = 0.8f;  
+            float duration = 0.5f; 
+
+            rumbleManager.RumblePulse(low, high, duration);
+        }
+    }
+
+
 }
