@@ -20,6 +20,7 @@ public class CharacterSelection : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 0;
         characterList = new DoublyLinkedList<CharacterData>();
         foreach (var character in allCharacters)
         {
@@ -74,6 +75,11 @@ public class CharacterSelection : MonoBehaviour
         currentCharacterModel = Instantiate(currentNode.Data.characterPrefab, characterDisplayParent.transform);
     }
 
+    public GameObject GetCharacterPrefab() {
+        return currentCharacterModel;
+    }
+
+
     public void SelectCharacter()
     {
         Debug.Log("SELECCIONADO");
@@ -82,7 +88,7 @@ public class CharacterSelection : MonoBehaviour
             GameManager.Instance.SetSelectedCharacter(currentNode.Data);
 
             characterSelected = true;
-
+            Time.timeScale = 1;
             if (selectionUI != null)
                 selectionUI.SetActive(false);
 

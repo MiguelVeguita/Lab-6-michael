@@ -8,7 +8,9 @@ public class AIManager : MonoBehaviour
     private GameObject[] AIs;
 
     public GameObject AIPrefab;
-    public GameObject PlayerPrefab;
+    //public GameObject PlayerPrefab;
+
+    public GameObject CharacterSelection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,7 +26,7 @@ public class AIManager : MonoBehaviour
         {
             AIs[i] = Instantiate(AIPrefab, AISpawnPoints[i]);
             AIs[i].GetComponent<AIOpponentController>().setWaypoints(Waypoints);
-            AIs[i].GetComponent<AIOpponentController>().setPlayerTransform(PlayerPrefab.GetComponent<Transform>());
+            AIs[i].GetComponent<AIOpponentController>().setPlayerTransform(CharacterSelection.GetComponent<CharacterSelection>().GetCharacterPrefab().GetComponent<Transform>());
         }
     }
 
