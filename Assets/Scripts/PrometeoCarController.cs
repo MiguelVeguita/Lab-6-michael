@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PrometeoCarController : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class PrometeoCarController : MonoBehaviour
     [Range(1, 10)]
     public int decelerationMultiplier = 2;
     public Vector3 bodyMassCenter;
+
+    [Header("Impulso")]
+    public float boostForce = 7000f;
+    private bool isBoosting = false;
 
     [Header("Luces del Vehículo")]
     public GameObject reverseLights;
@@ -63,7 +68,15 @@ public class PrometeoCarController : MonoBehaviour
             reverseLights.SetActive(false);
         }
     }
+    private void OnEnable()
+    {
+        Item.PowerUp += ActivateBoost;
+    }
 
+    private void OnDisable()
+    {
+        Item.PowerUp -= ActivateBoost;
+    }
     void FixedUpdate()
     {
         if (GameManager.Instance != null && !GameManager.Instance.CanDrive())
@@ -87,7 +100,10 @@ public class PrometeoCarController : MonoBehaviour
         {
             throttleInput = 0f;
         }
-        
+        if (isBoosting)
+        {
+            carRigidbody.AddForce(transform.forward * boostForce, ForceMode.Acceleration);
+        }
         HandleMotor();
         HandleSteering();
     }
@@ -138,7 +154,24 @@ public class PrometeoCarController : MonoBehaviour
             reverseLights.SetActive(isReversing);
         }
     }
+    public void ActivateBoost()
+    {
+        if (!isBoosting)
+        {
+            StartCoroutine(BoostCoroutine());
+        }
+    }
+    private IEnumerator BoostCoroutine()
+    {
+        isBoosting = true;
+        Debug.Log("¡Impulso activado!");
 
+        // Espera durante 2 segundos
+        yield return new WaitForSeconds(2f);
+
+        isBoosting = false;
+        Debug.Log("Impulso terminado.");
+    }
     private void HandleMotor()
     {
         float motorTorque = throttleInput * accelerationMultiplier * 50f;

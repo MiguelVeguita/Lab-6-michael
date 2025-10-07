@@ -35,7 +35,6 @@ public class AIOpponentController : MonoBehaviour
     {
         _player = playerTransform;
     }
-
     void FixedUpdate()
     {
         if (GameManager.Instance != null && !GameManager.Instance.CanDrive())

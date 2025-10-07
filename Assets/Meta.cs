@@ -1,27 +1,25 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Meta : MonoBehaviour
 {
     public GameObject panel;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public static event Action ganaste;
+    public static event Action perdiste;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             Time.timeScale = 0;
-          panel.SetActive(true);
+            ganaste?.Invoke();
+        }
+        if (other.CompareTag("com"))
+        {
+            Time.timeScale = 0;
+            perdiste?.Invoke();
+
         }
     }
     public void RestartScene()

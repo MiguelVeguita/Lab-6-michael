@@ -123,6 +123,7 @@ MonoBehaviour:
   brakeForce: 450
   decelerationMultiplier: 2
   bodyMassCenter: {x: 0, y: 0, z: 0}
+  boostForce: 20
   reverseLights: {fileID: 2710278174659435963}
   drivingSoundSource: {fileID: 3317405574953310481}
   frontLeftMesh: {fileID: 8649133034589738184}
