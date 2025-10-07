@@ -20,6 +20,12 @@ public class PrometeoCarController : MonoBehaviour
     public int decelerationMultiplier = 2;
     public Vector3 bodyMassCenter;
 
+    [Header("Luces del Vehículo")]
+    public GameObject reverseLights;
+
+    [Header("Sonido")]
+    public AudioSource drivingSoundSource;
+
     [Header("Ruedas (Colliders y Meshes)")]
     public GameObject frontLeftMesh;
     public WheelCollider frontLeftCollider;
@@ -36,11 +42,11 @@ public class PrometeoCarController : MonoBehaviour
     private Rigidbody carRigidbody;
     private float carSpeed;
     private float steerInput;
-    private float throttleInput; 
+    private float throttleInput;
     private bool isAccelerating;
     private bool isReversing;
-
     private GamepadRumble rumbleManager;
+
     void Start()
     {
         carRigidbody = gameObject.GetComponent<Rigidbody>();
@@ -52,6 +58,10 @@ public class PrometeoCarController : MonoBehaviour
             rumbleManager = gameManager.GetComponent<GamepadRumble>();
         }
 
+        if (reverseLights != null)
+        {
+            reverseLights.SetActive(false);
+        }
     }
 
     void FixedUpdate()
@@ -78,8 +88,26 @@ public class PrometeoCarController : MonoBehaviour
     void Update()
     {
         AnimateWheelMeshes();
+        HandleReverseLights();
+        HandleDrivingSound();
     }
 
+    private void HandleDrivingSound()
+    {
+        if (drivingSoundSource == null) return;
+
+        if (isAccelerating)
+        {
+            if (!drivingSoundSource.isPlaying)
+            {
+                drivingSoundSource.Play();
+            }
+        }
+        else
+        {
+            drivingSoundSource.Stop();
+        }
+    }
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -96,6 +124,13 @@ public class PrometeoCarController : MonoBehaviour
         isReversing = context.ReadValueAsButton();
     }
 
+    private void HandleReverseLights()
+    {
+        if (reverseLights != null)
+        {
+            reverseLights.SetActive(isReversing);
+        }
+    }
 
     private void HandleMotor()
     {
@@ -169,6 +204,7 @@ public class PrometeoCarController : MonoBehaviour
         meshTransform.position = pos;
         meshTransform.rotation = rot;
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Pared")
@@ -184,13 +220,11 @@ public class PrometeoCarController : MonoBehaviour
         if (rumbleManager != null && collision.relativeVelocity.magnitude > 10)
         {
             Debug.Log("choque");
-            float low = 0.8f;   
-            float high = 0.8f;  
-            float duration = 0.5f; 
+            float low = 0.8f;
+            float high = 0.8f;
+            float duration = 0.5f;
 
             rumbleManager.RumblePulse(low, high, duration);
         }
     }
-
-
 }
