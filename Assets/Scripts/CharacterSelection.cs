@@ -21,11 +21,12 @@ public class CharacterSelection : MonoBehaviour
     void Start()
     {
         Time.timeScale = 0;
+    }
+    void Awake()
+    {
         characterList = new DoublyLinkedList<CharacterData>();
         foreach (var character in allCharacters)
-        {
             characterList.Add(character);
-        }
 
         if (characterList.Head != null)
         {
@@ -33,7 +34,6 @@ public class CharacterSelection : MonoBehaviour
             UpdateCharacterDisplay();
         }
     }
-
     void Update()
     {
         if (!characterSelected)
@@ -92,6 +92,8 @@ public class CharacterSelection : MonoBehaviour
             if (selectionUI != null)
                 selectionUI.SetActive(false);
 
+            GameManager.Instance.StartRaceCountdown(1f);
+            FindObjectOfType<FrameCountdownUI>()?.StartCountdown(1f);
             Debug.Log("Personaje seleccionado: " + currentNode.Data.characterName);
         }
     }

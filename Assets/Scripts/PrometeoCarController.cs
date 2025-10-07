@@ -56,6 +56,13 @@ public class PrometeoCarController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (GameManager.Instance != null && !GameManager.Instance.CanDrive())
+        {
+            throttleInput = 0f;
+            ApplyMotorTorque(0);
+            ApplyBrakes();
+            return;
+        }
         carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
 
         if (isAccelerating)
@@ -70,7 +77,7 @@ public class PrometeoCarController : MonoBehaviour
         {
             throttleInput = 0f;
         }
-
+        
         HandleMotor();
         HandleSteering();
     }

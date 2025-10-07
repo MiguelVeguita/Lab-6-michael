@@ -17,6 +17,7 @@ public class AIOpponentController : MonoBehaviour
     public float _ramRange = 8f;
     public float _ramCooldown = 3f;
     private float _ramTimer = 0f;
+    public float Speed { get => _speed; set => _speed = value; }
 
     private Rigidbody _rb;
 
@@ -37,6 +38,16 @@ public class AIOpponentController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (GameManager.Instance != null && !GameManager.Instance.CanDrive())
+        {
+            if (_rb != null)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
+            return;
+        }
+
         if (_waypoints.Length == 0) 
             return;
 
