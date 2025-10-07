@@ -158,14 +158,9 @@ public class PrometeoCarController : MonoBehaviour
             }
             else if (Mathf.Abs(carSpeed) < maxReverseSpeed && throttleInput < 0)
             {
-                if (carRigidbody.linearVelocity.z > 0.1f)
-                {
-                    ApplyBrakes();
-                }
-                else
-                {
-                    ApplyMotorTorque(motorTorque);
-                }
+                // Aplicamos directamente el torque de reversa sin frenar primero.
+                // Esto te dará la fuerza para salir de los choques.
+                ApplyMotorTorque(motorTorque);
             }
             else
             {

@@ -3,9 +3,8 @@ using System.Collections;
 
 public enum RacePhase { PreRace, Countdown, Go, Racing }
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager Instance { get; private set; }
 
     public CharacterData SelectedCharacter { get; private set; }
 
@@ -16,11 +15,7 @@ public class GameManager : MonoBehaviour
     public event System.Action<int> OnCountdownTick;
     public event System.Action OnGo;
 
-    private void Awake()
-    {
-        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
-    }
+   
 
     public void SetSelectedCharacter(CharacterData character) => SelectedCharacter = character;
 
